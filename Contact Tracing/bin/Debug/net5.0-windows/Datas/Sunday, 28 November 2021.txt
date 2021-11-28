@@ -1,0 +1,42 @@
+Date: Sunday, 28 November 2021
+Time: 08:24
+Name: try
+Address: 13
+Age: 13
+Gender: Female
+Temperature: 2
+Symptom/s: Loss of taste or smell, Difficulty breathing
+Travelled: No
+To: N/A
+Number: 12312312312
+Email: 
+
+
+Date: Sunday, 28 November 2021
+Time: 08:53
+Name: Johndell S. Kitts
+Address: asd
+Age: 12
+Gender: Female
+Temperature: 123
+Symptom/s: Cough, Tiredness
+Travelled: Yes
+To: ma
+Number: 12312312312
+Email: 
+
+
+Date: Sunday, 28 November 2021
+Time: 08:53
+Name: asd
+Address: asd
+Age: 123
+Gender: Female
+Temperature: 123
+Symptom/s: Loss of taste or smell, Chest pain
+Travelled: No
+To: N/A
+Number: 12312312312
+Email: 
+
+
