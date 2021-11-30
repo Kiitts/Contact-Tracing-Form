@@ -1,0 +1,14 @@
+Date: Tuesday, 30 November 2021
+Time: 02:42
+Name: Johndell Kitts
+Address: divisoria, tondo, manila
+Age: 22
+Gender: Male
+Temperature: 34
+Symptom/s: Cough, Fever, Loss of taste or smell, Difficulty breathing
+Travelled: Yes
+To: Cebu
+Number: 09123456789
+Email: email@email.com
+
+

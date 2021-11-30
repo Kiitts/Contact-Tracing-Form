@@ -101,7 +101,7 @@ namespace Contact_Tracing
             this.contactTF.Size = new System.Drawing.Size(526, 493);
             this.contactTF.TabIndex = 1;
             this.contactTF.TabStop = false;
-            this.contactTF.Text = "Contact Tracing From";
+            this.contactTF.Text = "Contact Tracing Form";
             // 
             // clearBtn
             // 
