@@ -23,6 +23,7 @@ namespace Contact_Tracing
         // initialize all needed string variable
         public static string fullName, age, address, temperature, gender, goneOutside, goneWhere, dateNow,
             timeNow, pNumber, emailAdd, sickness = string.Empty, datesString;
+        public bool genState = false;
         public string toQr, fromQr;
         DateTime dateToday;
         StreamWriter outputfile, datefile;
@@ -144,6 +145,8 @@ namespace Contact_Tracing
             }
             sicknessCheckBox.ClearSelected();
             QRbox.Image = null;
+            fromQr = string.Empty;
+            toQr = string.Empty;
         }
 
         private bool CheckRequired()
@@ -319,18 +322,23 @@ namespace Contact_Tracing
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (QRbox.Image == null || QRbox == null)
+            if ((QRbox.Image == null || QRbox == null))
             {
                 QRSave.Enabled = false;
             }
             else
             {
-                QRSave.Enabled = true;
+                QRSave.Enabled = genState;
+            }
+            if(goesOutsideYes.Checked)
+            {
+                goesOutsideWhere.Enabled = true;
+            }
+            else
+            {
+                goesOutsideWhere.Enabled = false;
             }
         }
-
-        
-
         private void inputNumber_Click(object sender, EventArgs e)
         {
             inputNumber.BackColor = Color.White;
@@ -353,9 +361,14 @@ namespace Contact_Tracing
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(vid.IsRunning)
+            if (vid != null)
             {
-                vid.Stop();
+                if (vid.IsRunning)
+                {
+                    vid.SignalToStop();
+                    vid.WaitForStop();
+                    vid.Stop();
+                }
             }
         }
 
@@ -431,8 +444,13 @@ namespace Contact_Tracing
 
         private void QRGen_Click(object sender, EventArgs e)
         {
+            genState = true;
             cameras.Visible = false;
+            vid.SignalToStop();
+            vid.WaitForStop();
+            vid.Stop();
             forCamera.Stop();
+            QRbox.Image = null;
             if(!CheckRequired())
             {
                 getData();
@@ -479,11 +497,93 @@ namespace Contact_Tracing
         }
         private void QRSub_Click(object sender, EventArgs e)
         {
+            genState = false;
             cameras.Visible = true;
             vid = new VideoCaptureDevice(camerasList[cameras.SelectedIndex].MonikerString);
             vid.NewFrame += vid_NewFrame;
             vid.Start();
             forCamera.Start();
+        }
+
+        private void FillFormFromQr()
+        {
+            if (fromQr != string.Empty || fromQr != null)
+            {
+                Informations.Personal loadInfo = JsonConvert.DeserializeObject<Informations.Personal>
+                    (fromQr);
+                info = new Informations.Personal();
+                info = loadInfo;
+                inputName.Text = info.FullName;
+                inputAge.Text = info.Age;
+                inputAddress.Text = info.Address;
+                maleRadio.Checked = false;
+                femaleRadio.Checked = false;
+                if (info.Gender == "Male")
+                {
+                    maleRadio.Checked = true;
+                }
+                else
+                {
+                    femaleRadio.Checked = true;
+                }
+                goesOutsideYes.Checked = false;
+                goesOutsideNo.Checked = false;
+                goesOutsideWhere.Text = string.Empty;
+                if (info.OutSideNCR == "Yes")
+                {
+                    goesOutsideYes.Checked = true;
+                    goesOutsideWhere.Text = info.WhereOutside;
+                }
+                else
+                {
+                    goesOutsideNo.Checked = true;
+                }
+                for(int i = 0; i < sicknessCheckBox.Items.Count; i++)
+                {
+                    sicknessCheckBox.SetItemChecked(i, false);
+                }
+                if (info.Sick.Count > 0)
+                {
+                    foreach (var sick in info.Sick)
+                    {
+                        if (sick == "Cough")
+                        {
+                            sicknessCheckBox.SetItemChecked(0, true);
+                        }
+                        if (sick == "Fever")
+                        {
+                            sicknessCheckBox.SetItemChecked(1, true);
+                        }
+                        if (sick == "Tiredness")
+                        {
+                            sicknessCheckBox.SetItemChecked(2, true);
+                        }
+                        if (sick == "Loss of taste or smell")
+                        {
+                            sicknessCheckBox.SetItemChecked(3, true);
+                        }
+                        if (sick == "Difficulty breathing")
+                        {
+                            sicknessCheckBox.SetItemChecked(4, true);
+                        }
+                        if (sick == "Loss of speech or mobility")
+                        {
+                            sicknessCheckBox.SetItemChecked(5, true);
+                        }
+                        if (sick == "Chest pain")
+                        {
+                            sicknessCheckBox.SetItemChecked(6, true);
+                        }
+                    }
+                    inputNumber.Text = info.PhoneNumber;
+                    if (info.Email != null || info.Email != string.Empty)
+                    {
+                        inputEmail.Text = string.Empty;
+                        inputEmail.Text = info.Email;
+                    }
+                    fromQr = string.Empty;
+                }
+            }
         }
 
         private void vid_NewFrame(object sender, NewFrameEventArgs eventArgs)
@@ -492,18 +592,22 @@ namespace Contact_Tracing
         }
         private void forCamera_Tick(object sender, EventArgs e)
         {
-            ZXing.BarcodeReader qrcode = new IBarcodeReader();
-            ZXing.Result result = qrcode.Decode((Bitmap)QRbox.Image);
-            if (result != null)
+            if (QRbox.Image != null)
             {
-                fromQr = result.ToString();
-                if (vid.IsRunning)
+                BarcodeReader qrcode = new BarcodeReader();
+                Result result = qrcode.Decode((Bitmap)QRbox.Image);
+                if (result != null)
                 {
-                    vid.Stop();
-                    forCamera.Stop();
+                    fromQr = result.ToString();
+                    if (vid.IsRunning)
+                    {
+                        vid.SignalToStop();
+                        vid.WaitForStop();
+                        vid.Stop();
+                    }
+                    FillFormFromQr();
                 }
             }
-
         }
     }
 }

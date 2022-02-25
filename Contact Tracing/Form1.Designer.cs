@@ -399,7 +399,7 @@ namespace Contact_Tracing
             // manage
             // 
             this.manage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.manage.Location = new System.Drawing.Point(747, 5);
+            this.manage.Location = new System.Drawing.Point(467, 5);
             this.manage.Name = "manage";
             this.manage.Size = new System.Drawing.Size(72, 32);
             this.manage.TabIndex = 22;
@@ -476,7 +476,7 @@ namespace Contact_Tracing
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.ClientSize = new System.Drawing.Size(831, 545);
+            this.ClientSize = new System.Drawing.Size(551, 545);
             this.Controls.Add(this.cameras);
             this.Controls.Add(this.QRSave);
             this.Controls.Add(this.QRGen);

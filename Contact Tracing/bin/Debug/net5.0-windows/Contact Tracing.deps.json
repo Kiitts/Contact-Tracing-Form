@@ -6,6 +6,17 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v5.0": {
+      "Contact Tracing/1.0.0": {
+        "dependencies": {
+          "AForge.Video.DirectShow": "2.2.5",
+          "Newtonsoft.Json": "13.0.1",
+          "QRCoder": "1.4.3",
+          "ZXing.Net": "0.16.6"
+        },
+        "runtime": {
+          "Contact Tracing.dll": {}
+        }
+      },
       "AForge/2.2.5": {
         "runtime": {
           "lib/AForge.dll": {
@@ -40,20 +51,6 @@
       "Microsoft.Win32.SystemEvents/5.0.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "5.0.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Microsoft.Win32.SystemEvents.dll": {
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.0.20.51904"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.0.20.51904"
-          }
         }
       },
       "Newtonsoft.Json/13.0.1": {
@@ -111,6 +108,11 @@
     }
   },
   "libraries": {
+    "Contact Tracing/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
     "AForge/2.2.5": {
       "type": "package",
       "serviceable": true,
