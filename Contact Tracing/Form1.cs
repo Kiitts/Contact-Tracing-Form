@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using Contact_Tracing.Models;
+using Newtonsoft.Json;
+using QRCoder;
 
 namespace Contact_Tracing
 {
@@ -16,9 +19,11 @@ namespace Contact_Tracing
         // initialize all needed string variable
         public static string fullName, age, address, temperature, gender, goneOutside, goneWhere, dateNow,
             timeNow, pNumber, emailAdd, sickness = string.Empty, datesString;
+        public string toQr;
         DateTime dateToday;
         StreamWriter outputfile, datefile;
         Manager_Password passwordConfirm = new Manager_Password();
+        Informations.Personal info;
         public Form1()
         {
             InitializeComponent();
@@ -132,6 +137,7 @@ namespace Contact_Tracing
                 sicknessCheckBox.SetItemChecked(i, false);
             }
             sicknessCheckBox.ClearSelected();
+            QRbox.Image = null;
         }
 
         private bool CheckRequired()
@@ -259,6 +265,32 @@ namespace Contact_Tracing
             reset();
         }
 
+        private void QRgensub_Click(object sender, EventArgs e)
+        {
+            if(QRgensub.Text == "Generate/Submit QR")
+            {
+                QRgensub.Text = "Close QR Window";
+            }
+            else
+            {
+                QRgensub.Text = "Generate/Submit QR";
+            }
+        }
+
+        private void QRgensub_TextChanged(object sender, EventArgs e)
+        {
+            if(QRgensub.Text == "Generate/Submit QR")
+            {
+                this.Width = 567;
+                this.Height = 584;
+            }
+            else
+            {
+                this.Width = 926;
+                this.Height = 584;
+            }
+        }
+
         private void manage_Click(object sender, EventArgs e)
         {
             passwordConfirm.ShowDialog();
@@ -277,6 +309,18 @@ namespace Contact_Tracing
         private void goesOutsideWhere_Click(object sender, EventArgs e)
         {
             goesOutsideWhere.BackColor = Color.White;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (QRbox.Image == null || QRbox == null)
+            {
+                QRSave.Enabled = false;
+            }
+            else
+            {
+                QRSave.Enabled = true;
+            }
         }
 
         private void inputNumber_Click(object sender, EventArgs e)
@@ -354,6 +398,54 @@ namespace Contact_Tracing
             // and clear its text
             goesOutsideWhere.Text = "";
             goesOutsideWhere.Enabled = false;
+        }
+
+        // qr
+
+        private void QRGen_Click(object sender, EventArgs e)
+        {
+            if(!CheckRequired())
+            {
+                getData();
+                ParseJson();
+                GenerateQr();
+            }
+        }
+
+        private void ParseJson()
+        {
+            info = new Informations.Personal();
+            info.FullName = fullName;
+            info.Age = age;
+            info.Address = address;
+            info.Gender = gender;
+            info.OutSideNCR = goneOutside;
+            info.WhereOutside = goneWhere;
+            if (sickness != string.Empty)
+            {
+                info.Sick = new List<string>();
+                string[] hold = sickness.Split(", ");
+                info.Sick.AddRange(hold);
+            }
+            info.PhoneNumber = pNumber;
+            info.Email = emailAdd;
+            toQr = JsonConvert.SerializeObject(info);
+        }
+        private void GenerateQr()
+        {
+            QRCodeGenerator qr = new QRCodeGenerator();
+            QRCodeData data = qr.CreateQrCode(toQr, QRCodeGenerator.ECCLevel.Q);
+            QRCode code = new QRCode(data);
+            QRbox.Image = code.GetGraphic(3,Color.DarkBlue,Color.White, true);
+        }
+
+        private void QRSave_Click(object sender, EventArgs e)
+        {
+            if(folderBrowserDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string savePath = folderBrowserDialog1.SelectedPath;
+                QRbox.Image.Save($"{savePath}\\{fullName.Replace(" ", "")}.jpg");
+            }
         }
     }
 }

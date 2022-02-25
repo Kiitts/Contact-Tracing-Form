@@ -36,3 +36,8 @@ C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contac
 C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contact Tracing\obj\Debug\net5.0-windows\Contact Tracing.csproj.AssemblyReference.cache
 C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contact Tracing\obj\Debug\net5.0-windows\Contact_Tracing.Manager_Password.resources
 C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contact Tracing\obj\Debug\net5.0-windows\Contact_Tracing.ManagerList.resources
+C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contact Tracing\bin\Debug\net5.0-windows\Newtonsoft.Json.dll
+C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contact Tracing\bin\Debug\net5.0-windows\QRCoder.dll
+C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contact Tracing\bin\Debug\net5.0-windows\System.Drawing.Common.dll
+C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contact Tracing\bin\Debug\net5.0-windows\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+C:\Users\User\Desktop\Kitts Things 1-1\5-1st sem\OOP\Contact Tracing Form\Contact Tracing\bin\Debug\net5.0-windows\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll

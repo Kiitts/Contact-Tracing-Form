@@ -29,8 +29,10 @@ namespace Contact_Tracing
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.ownerName = new System.Windows.Forms.Label();
             this.contactTF = new System.Windows.Forms.GroupBox();
+            this.QRgensub = new System.Windows.Forms.Button();
             this.clearBtn = new System.Windows.Forms.Button();
             this.sicknessLbl = new System.Windows.Forms.Label();
             this.sicknessCheckBox = new System.Windows.Forms.CheckedListBox();
@@ -55,17 +57,25 @@ namespace Contact_Tracing
             this.addressLbl = new System.Windows.Forms.Label();
             this.nameLbl = new System.Windows.Forms.Label();
             this.manage = new System.Windows.Forms.Button();
+            this.QRbox = new System.Windows.Forms.PictureBox();
+            this.QRSub = new System.Windows.Forms.Button();
+            this.QRGen = new System.Windows.Forms.Button();
+            this.QRSave = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.contactTF.SuspendLayout();
             this.goesOutside.SuspendLayout();
             this.genderBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.QRbox)).BeginInit();
             this.SuspendLayout();
             // 
             // ownerName
             // 
-            this.ownerName.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.ownerName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.ownerName.AutoSize = true;
             this.ownerName.Font = new System.Drawing.Font("Arial Rounded MT Bold", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.ownerName.Location = new System.Drawing.Point(135, 9);
+            this.ownerName.Location = new System.Drawing.Point(13, 9);
             this.ownerName.Name = "ownerName";
             this.ownerName.Size = new System.Drawing.Size(282, 28);
             this.ownerName.TabIndex = 0;
@@ -74,9 +84,8 @@ namespace Contact_Tracing
             // 
             // contactTF
             // 
-            this.contactTF.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.contactTF.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.contactTF.Controls.Add(this.QRgensub);
             this.contactTF.Controls.Add(this.clearBtn);
             this.contactTF.Controls.Add(this.sicknessLbl);
             this.contactTF.Controls.Add(this.sicknessCheckBox);
@@ -103,10 +112,23 @@ namespace Contact_Tracing
             this.contactTF.TabStop = false;
             this.contactTF.Text = "Contact Tracing Form";
             // 
+            // QRgensub
+            // 
+            this.QRgensub.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.QRgensub.Font = new System.Drawing.Font("Arial Rounded MT Bold", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.QRgensub.Location = new System.Drawing.Point(212, 454);
+            this.QRgensub.Name = "QRgensub";
+            this.QRgensub.Size = new System.Drawing.Size(144, 33);
+            this.QRgensub.TabIndex = 22;
+            this.QRgensub.Text = "Generate/Submit QR";
+            this.QRgensub.UseVisualStyleBackColor = true;
+            this.QRgensub.TextChanged += new System.EventHandler(this.QRgensub_TextChanged);
+            this.QRgensub.Click += new System.EventHandler(this.QRgensub_Click);
+            // 
             // clearBtn
             // 
             this.clearBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.clearBtn.Location = new System.Drawing.Point(6, 453);
+            this.clearBtn.Location = new System.Drawing.Point(50, 454);
             this.clearBtn.Name = "clearBtn";
             this.clearBtn.Size = new System.Drawing.Size(157, 33);
             this.clearBtn.TabIndex = 14;
@@ -383,19 +405,72 @@ namespace Contact_Tracing
             this.manage.UseVisualStyleBackColor = true;
             this.manage.Click += new System.EventHandler(this.manage_Click);
             // 
+            // QRbox
+            // 
+            this.QRbox.Location = new System.Drawing.Point(580, 53);
+            this.QRbox.Name = "QRbox";
+            this.QRbox.Size = new System.Drawing.Size(300, 300);
+            this.QRbox.TabIndex = 23;
+            this.QRbox.TabStop = false;
+            // 
+            // QRSub
+            // 
+            this.QRSub.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.QRSub.Location = new System.Drawing.Point(672, 359);
+            this.QRSub.Name = "QRSub";
+            this.QRSub.Size = new System.Drawing.Size(157, 33);
+            this.QRSub.TabIndex = 23;
+            this.QRSub.Text = "Submit QR";
+            this.QRSub.UseVisualStyleBackColor = true;
+            // 
+            // QRGen
+            // 
+            this.QRGen.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.QRGen.Location = new System.Drawing.Point(672, 417);
+            this.QRGen.Name = "QRGen";
+            this.QRGen.Size = new System.Drawing.Size(157, 33);
+            this.QRGen.TabIndex = 24;
+            this.QRGen.Text = "Generate QR";
+            this.QRGen.UseVisualStyleBackColor = true;
+            this.QRGen.Click += new System.EventHandler(this.QRGen_Click);
+            // 
+            // QRSave
+            // 
+            this.QRSave.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.QRSave.Location = new System.Drawing.Point(672, 470);
+            this.QRSave.Name = "QRSave";
+            this.QRSave.Size = new System.Drawing.Size(157, 33);
+            this.QRSave.TabIndex = 25;
+            this.QRSave.Text = "Save QR";
+            this.QRSave.UseVisualStyleBackColor = true;
+            this.QRSave.Click += new System.EventHandler(this.QRSave_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.ClientSize = new System.Drawing.Size(551, 545);
+            this.Controls.Add(this.QRSave);
+            this.Controls.Add(this.QRGen);
+            this.Controls.Add(this.QRSub);
+            this.Controls.Add(this.QRbox);
             this.Controls.Add(this.manage);
             this.Controls.Add(this.contactTF);
             this.Controls.Add(this.ownerName);
             this.MinimumSize = new System.Drawing.Size(567, 584);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "Contact Tracing";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.contactTF.ResumeLayout(false);
             this.contactTF.PerformLayout();
@@ -403,6 +478,7 @@ namespace Contact_Tracing
             this.goesOutside.PerformLayout();
             this.genderBox.ResumeLayout(false);
             this.genderBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.QRbox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -436,6 +512,14 @@ namespace Contact_Tracing
         private System.Windows.Forms.CheckedListBox sicknessCheckBox;
         private System.Windows.Forms.Button clearBtn;
         private System.Windows.Forms.Button manage;
+        private System.Windows.Forms.Button QRgensub;
+        private System.Windows.Forms.PictureBox QRbox;
+        private System.Windows.Forms.Button QRSub;
+        private System.Windows.Forms.Button QRGen;
+        private System.Windows.Forms.Button QRSave;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
     }
 }
 
