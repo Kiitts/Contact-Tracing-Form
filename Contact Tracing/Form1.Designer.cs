@@ -64,6 +64,8 @@ namespace Contact_Tracing
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.cameras = new System.Windows.Forms.ComboBox();
+            this.forCamera = new System.Windows.Forms.Timer(this.components);
             this.contactTF.SuspendLayout();
             this.goesOutside.SuspendLayout();
             this.genderBox.SuspendLayout();
@@ -397,7 +399,7 @@ namespace Contact_Tracing
             // manage
             // 
             this.manage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.manage.Location = new System.Drawing.Point(467, 5);
+            this.manage.Location = new System.Drawing.Point(747, 5);
             this.manage.Name = "manage";
             this.manage.Size = new System.Drawing.Size(72, 32);
             this.manage.TabIndex = 22;
@@ -422,6 +424,7 @@ namespace Contact_Tracing
             this.QRSub.TabIndex = 23;
             this.QRSub.Text = "Submit QR";
             this.QRSub.UseVisualStyleBackColor = true;
+            this.QRSub.Click += new System.EventHandler(this.QRSub_Click);
             // 
             // QRGen
             // 
@@ -454,12 +457,27 @@ namespace Contact_Tracing
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // cameras
+            // 
+            this.cameras.FormattingEnabled = true;
+            this.cameras.Location = new System.Drawing.Point(580, 40);
+            this.cameras.Name = "cameras";
+            this.cameras.Size = new System.Drawing.Size(192, 23);
+            this.cameras.TabIndex = 26;
+            this.cameras.Visible = false;
+            // 
+            // forCamera
+            // 
+            this.forCamera.Interval = 1000;
+            this.forCamera.Tick += new System.EventHandler(this.forCamera_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.ClientSize = new System.Drawing.Size(551, 545);
+            this.ClientSize = new System.Drawing.Size(831, 545);
+            this.Controls.Add(this.cameras);
             this.Controls.Add(this.QRSave);
             this.Controls.Add(this.QRGen);
             this.Controls.Add(this.QRSub);
@@ -471,7 +489,9 @@ namespace Contact_Tracing
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Contact Tracing";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.contactTF.ResumeLayout(false);
             this.contactTF.PerformLayout();
             this.goesOutside.ResumeLayout(false);
@@ -520,6 +540,8 @@ namespace Contact_Tracing
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.ComboBox cameras;
+        private System.Windows.Forms.Timer forCamera;
     }
 }
 

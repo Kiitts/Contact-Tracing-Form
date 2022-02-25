@@ -11,6 +11,10 @@ using System.IO;
 using Contact_Tracing.Models;
 using Newtonsoft.Json;
 using QRCoder;
+using AForge.Video.DirectShow;
+using AForge.Video;
+using ZXing;
+using ZXing.Aztec;
 
 namespace Contact_Tracing
 {
@@ -19,11 +23,13 @@ namespace Contact_Tracing
         // initialize all needed string variable
         public static string fullName, age, address, temperature, gender, goneOutside, goneWhere, dateNow,
             timeNow, pNumber, emailAdd, sickness = string.Empty, datesString;
-        public string toQr;
+        public string toQr, fromQr;
         DateTime dateToday;
         StreamWriter outputfile, datefile;
         Manager_Password passwordConfirm = new Manager_Password();
         Informations.Personal info;
+        FilterInfoCollection camerasList;
+        VideoCaptureDevice vid;
         public Form1()
         {
             InitializeComponent();
@@ -323,15 +329,36 @@ namespace Contact_Tracing
             }
         }
 
+        
+
         private void inputNumber_Click(object sender, EventArgs e)
         {
             inputNumber.BackColor = Color.White;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            camerasList = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            foreach(FilterInfo cameraList in camerasList)
+            {
+                cameras.Items.Add(cameraList);
+            }
+            cameras.SelectedIndex = 0;
         }
 
         private void inputName_Click(object sender, EventArgs e)
         {
             inputName.BackColor = Color.White;
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(vid.IsRunning)
+            {
+                vid.Stop();
+            }
+        }
+
         private void inputAge_Click(object sender, EventArgs e)
         {
             inputAge.BackColor = Color.White;
@@ -404,6 +431,8 @@ namespace Contact_Tracing
 
         private void QRGen_Click(object sender, EventArgs e)
         {
+            cameras.Visible = false;
+            forCamera.Stop();
             if(!CheckRequired())
             {
                 getData();
@@ -433,6 +462,7 @@ namespace Contact_Tracing
         }
         private void GenerateQr()
         {
+            QRbox.Image = null;
             QRCodeGenerator qr = new QRCodeGenerator();
             QRCodeData data = qr.CreateQrCode(toQr, QRCodeGenerator.ECCLevel.Q);
             QRCode code = new QRCode(data);
@@ -446,6 +476,34 @@ namespace Contact_Tracing
                 string savePath = folderBrowserDialog1.SelectedPath;
                 QRbox.Image.Save($"{savePath}\\{fullName.Replace(" ", "")}.jpg");
             }
+        }
+        private void QRSub_Click(object sender, EventArgs e)
+        {
+            cameras.Visible = true;
+            vid = new VideoCaptureDevice(camerasList[cameras.SelectedIndex].MonikerString);
+            vid.NewFrame += vid_NewFrame;
+            vid.Start();
+            forCamera.Start();
+        }
+
+        private void vid_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            QRbox.Image = (Bitmap)eventArgs.Frame.Clone();
+        }
+        private void forCamera_Tick(object sender, EventArgs e)
+        {
+            ZXing.BarcodeReader qrcode = new IBarcodeReader();
+            ZXing.Result result = qrcode.Decode((Bitmap)QRbox.Image);
+            if (result != null)
+            {
+                fromQr = result.ToString();
+                if (vid.IsRunning)
+                {
+                    vid.Stop();
+                    forCamera.Stop();
+                }
+            }
+
         }
     }
 }
