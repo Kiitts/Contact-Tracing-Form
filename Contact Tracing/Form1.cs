@@ -36,6 +36,18 @@ namespace Contact_Tracing
             InitializeComponent();
         }
 
+        private string EncodeBase64(string value)
+        {
+            var valueBytes = Encoding.UTF8.GetBytes(value);
+            return Convert.ToBase64String(valueBytes);
+        }
+
+        private string DecodeBase64(string value)
+        {
+            var valueBytes = System.Convert.FromBase64String(value);
+            return Encoding.UTF8.GetString(valueBytes);
+        }
+
         private void saveIt()
         {
             outputfile = File.AppendText(@$"Datas\{dateNow}.txt");
@@ -286,20 +298,6 @@ namespace Contact_Tracing
             }
         }
 
-        private void QRgensub_TextChanged(object sender, EventArgs e)
-        {
-            if(QRgensub.Text == "Generate/Submit QR")
-            {
-                this.Width = 567;
-                this.Height = 584;
-            }
-            else
-            {
-                this.Width = 926;
-                this.Height = 584;
-            }
-        }
-
         private void manage_Click(object sender, EventArgs e)
         {
             passwordConfirm.ShowDialog();
@@ -442,14 +440,43 @@ namespace Contact_Tracing
 
         // qr
 
+        private void QRgensub_TextChanged(object sender, EventArgs e)
+        {
+            if (QRgensub.Text == "Generate/Submit QR")
+            {
+                if (vid != null)
+                {
+                    if (vid.IsRunning)
+                    {
+                        vid.SignalToStop();
+                        vid.WaitForStop();
+                        vid.Stop();
+                    }
+                }
+                QRbox.Image = null;
+                this.Width = 567;
+                this.Height = 584;
+            }
+            else
+            {
+                this.Width = 926;
+                this.Height = 584;
+            }
+        }
         private void QRGen_Click(object sender, EventArgs e)
         {
             genState = true;
             cameras.Visible = false;
-            vid.SignalToStop();
-            vid.WaitForStop();
-            vid.Stop();
-            forCamera.Stop();
+            if (vid != null)
+            {
+                if (vid.IsRunning)
+                {
+                    vid.SignalToStop();
+                    vid.WaitForStop();
+                    vid.Stop();
+                    forCamera.Stop();
+                }
+            }
             QRbox.Image = null;
             if(!CheckRequired())
             {
@@ -470,19 +497,50 @@ namespace Contact_Tracing
             info.WhereOutside = goneWhere;
             if (sickness != string.Empty)
             {
-                info.Sick = new List<string>();
+                info.Sick = new List<int>();
                 string[] hold = sickness.Split(", ");
-                info.Sick.AddRange(hold);
+                foreach(var sick in hold)
+                {
+                    if (sick == "Cough")
+                    {
+                        info.Sick.Add(0);
+                    }
+                    if (sick == "Fever")
+                    {
+                        info.Sick.Add(1);
+                    }
+                    if (sick == "Tiredness")
+                    {
+                        info.Sick.Add(2);
+                    }
+                    if (sick == "Loss of taste or smell")
+                    {
+                        info.Sick.Add(3);
+                    }
+                    if (sick == "Difficulty breathing")
+                    {
+                        info.Sick.Add(4);
+                    }
+                    if (sick == "Loss of speech or mobility")
+                    {
+                        info.Sick.Add(5);
+                    }
+                    if (sick == "Chest pain")
+                    {
+                        info.Sick.Add(6);
+                    }
+                }
             }
             info.PhoneNumber = pNumber;
             info.Email = emailAdd;
             toQr = JsonConvert.SerializeObject(info);
+            
         }
         private void GenerateQr()
         {
             QRbox.Image = null;
             QRCodeGenerator qr = new QRCodeGenerator();
-            QRCodeData data = qr.CreateQrCode(toQr, QRCodeGenerator.ECCLevel.Q);
+            QRCodeData data = qr.CreateQrCode(EncodeBase64(toQr), QRCodeGenerator.ECCLevel.Q);
             QRCode code = new QRCode(data);
             QRbox.Image = code.GetGraphic(3,Color.DarkBlue,Color.White, true);
         }
@@ -510,7 +568,7 @@ namespace Contact_Tracing
             if (fromQr != string.Empty || fromQr != null)
             {
                 Informations.Personal loadInfo = JsonConvert.DeserializeObject<Informations.Personal>
-                    (fromQr);
+                    (DecodeBase64(fromQr));
                 info = new Informations.Personal();
                 info = loadInfo;
                 inputName.Text = info.FullName;
@@ -538,51 +596,28 @@ namespace Contact_Tracing
                 {
                     goesOutsideNo.Checked = true;
                 }
-                for(int i = 0; i < sicknessCheckBox.Items.Count; i++)
+                for (int i = 0; i < sicknessCheckBox.Items.Count; i++)
                 {
                     sicknessCheckBox.SetItemChecked(i, false);
                 }
-                if (info.Sick.Count > 0)
+                if (info.Sick != null)
                 {
-                    foreach (var sick in info.Sick)
+                    if (info.Sick.Count > 0)
                     {
-                        if (sick == "Cough")
+                        foreach (var sick in info.Sick)
                         {
-                            sicknessCheckBox.SetItemChecked(0, true);
+                            sicknessCheckBox.SetItemChecked(sick, true);
                         }
-                        if (sick == "Fever")
-                        {
-                            sicknessCheckBox.SetItemChecked(1, true);
-                        }
-                        if (sick == "Tiredness")
-                        {
-                            sicknessCheckBox.SetItemChecked(2, true);
-                        }
-                        if (sick == "Loss of taste or smell")
-                        {
-                            sicknessCheckBox.SetItemChecked(3, true);
-                        }
-                        if (sick == "Difficulty breathing")
-                        {
-                            sicknessCheckBox.SetItemChecked(4, true);
-                        }
-                        if (sick == "Loss of speech or mobility")
-                        {
-                            sicknessCheckBox.SetItemChecked(5, true);
-                        }
-                        if (sick == "Chest pain")
-                        {
-                            sicknessCheckBox.SetItemChecked(6, true);
-                        }
+
                     }
-                    inputNumber.Text = info.PhoneNumber;
-                    if (info.Email != null || info.Email != string.Empty)
-                    {
-                        inputEmail.Text = string.Empty;
-                        inputEmail.Text = info.Email;
-                    }
-                    fromQr = string.Empty;
                 }
+                inputNumber.Text = info.PhoneNumber;
+                if (info.Email != null || info.Email != string.Empty)
+                {
+                    inputEmail.Text = string.Empty;
+                    inputEmail.Text = info.Email;
+                }
+                fromQr = string.Empty;
             }
         }
 

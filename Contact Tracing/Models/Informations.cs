@@ -16,7 +16,7 @@ namespace Contact_Tracing.Models
             public string Gender { get; set; }
             public string OutSideNCR { get; set; }
             public string WhereOutside { get; set; }
-            public List<string> Sick { get; set; }
+            public List<int> Sick { get; set; }
             public string PhoneNumber { get; set; }
             public string Email { get; set; }
         }
